@@ -2,8 +2,8 @@
 
 ```
 python3 -m venv testenv
-source /testenv/bin/activate
-python -m pip install -r requirements
+source testenv/bin/activate
+python -m pip install -r requirements.txt
 ```
 
 ## Fixture with Module Scope
