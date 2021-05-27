@@ -17,6 +17,13 @@ pytest
 
 #### Observe output
 
+##### TLDR: 
+
+Look at the output, you can see that the fixture was instantiated for module_1 and module_2, but not
+module_3, despite successful reads of fixture data for all three modules. Why?
+
+##### In depth discussion and explanation:
+
 We use the tmpdir_factory fixture in two ways. The way they probably want you to use it, and an
 under-the-hood way.
 
