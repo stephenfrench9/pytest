@@ -20,7 +20,7 @@ pytest
 #### TLDR: 
 
 Look at the output, you can see that the fixture was instantiated for module_1 and module_2, but not
-module_3, despite successful reads of fixture data for all three modules. Why?
+module_3. Nevertheless, we see successful reads of fixture data for all three modules. How can that be?
 
 #### EXPLANATION:
 
