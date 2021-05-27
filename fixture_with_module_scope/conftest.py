@@ -9,7 +9,7 @@ and the value is the same as the return value, ultimately available for referenc
 @pytest.fixture(scope='module')
 def module_file(tmpdir_factory):
     now = datetime.datetime.now().microsecond
-    print(f"module_file fixture is instantiated: {now}")
+    print(f"The 'module_file' fixture is instantiated: {now}")
     important_sentence = "dont buy Tesla stock"
     fn = tmpdir_factory.mktemp('data').join('img.txt')
     fn.write(important_sentence)
