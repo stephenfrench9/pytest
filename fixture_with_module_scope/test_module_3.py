@@ -2,9 +2,8 @@ import os
 
 def test_1__module_3(tmpdir_factory):
     directory = tmpdir_factory.getbasetemp()
-    # print(os.listdir(directory))
-    fo = open(os.path.join(directory, 'folder0/example.txt'))
-    print(fo.read())
-    fo = open(os.path.join(directory, 'folder1/example.txt'))
-    print(fo.read())
+
+    fo = open(os.path.join(directory, 'stocks0/advice.txt'))
+    print("test_1__module_3: ", fo.read())
+
     assert 0

@@ -8,15 +8,11 @@ and the value is the same as the return value, ultimately available for referenc
 """
 @pytest.fixture(scope='module')
 def module_file(tmpdir_factory):
-    now = datetime.datetime.now().microsecond
-    print(f"The 'module_file' fixture is instantiated: {now}")
-    important_sentence = "dont buy Tesla stock"
-    fn = tmpdir_factory.mktemp('data').join('img.txt')
-    fn.write(important_sentence)
 
-    filename = tmpdir_factory.mktemp("folder").join("example.txt")
-    filename.write(f"{now}\nwritten during setup into folder0/example.txt")
-    filename = tmpdir_factory.mktemp("folder").join("example.txt")
-    filename.write(f"{now}\nwritten during setup into folder1/example.txt")
+    now = datetime.datetime.now().microsecond
+    print(f"The 'module_file' fixture is instantiated at {now}")
+    advice = "dont buy Tesla stock"
+    fn = tmpdir_factory.mktemp('stocks').join('advice.txt')
+    fn.write(advice)
 
     return fn
