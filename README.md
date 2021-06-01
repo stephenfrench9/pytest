@@ -1,8 +1,8 @@
 # Index
 
 1. [Initialize](#initialize)
-1. [Initialize](#fixture-with-module-scope)
-1. [Initialize](#module-caching)
+1. [fixture with module scope](#fixture-with-module-scope)
+1. [module caching](#module-caching)
 
 # Initialize
 
