@@ -1,4 +1,10 @@
-## Initialize
+# Index
+
+1. [Initialize](#initialize)
+1. [Initialize](#fixture-with-module-scope)
+1. [Initialize](#module-caching)
+
+# Initialize
 
 ```
 python3 -m venv testenv
@@ -6,9 +12,7 @@ source testenv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-[What you see](#explanation)
-
-## Fixture with Module Scope
+# Fixture with Module Scope
 
 ### Run commands 
 
@@ -23,10 +27,6 @@ pytest
 
 Look at the output, you can see that the fixture was instantiated for module_1 and module_2, but not
 module_3. Nevertheless, we see successful reads of fixture data for all three modules. How can that be?
-
-#### test
-
-anythin
 
 #### EXPLANATION:
 
@@ -54,4 +54,11 @@ for the third module, despite the scope rules we defined for the fixture.
 (There is a time recorded for fixture instantiation for module 1 and module 2, but not module 3)
 
 Short Answer: The fixture consumed in module_3 is scoped to the session, and has access to the data that was
-generated in the setup call used to create the module-scoped custom fixtures.
+generated in the setup call used to create the module-scoped custom fixtures.1
+
+# Module Caching
+
+```
+cd fixtures_are_cached
+pytest
+```

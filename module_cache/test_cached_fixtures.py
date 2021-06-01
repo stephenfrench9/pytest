@@ -9,8 +9,6 @@ Despite being twice requested, it is only once instantiated.
 Restated, the fixture provided to both tests
 is the same object (id(append_second) evaluates to the same value)
 
-cd fixtures_are_cached
-pytest
 """
 
 import pytest
