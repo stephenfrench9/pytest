@@ -66,7 +66,7 @@ section of the pytest documentation
 ## Run these commands
 
 ```
-cd fixtures_are_cached
+cd module_cache
 pytest
 ```
 
