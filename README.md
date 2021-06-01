@@ -1,10 +1,10 @@
 # Index
 
-1. [Initialize](#initialize)
+1. [Initialization](#initialization)
 1. [fixture with module scope](#fixture-with-module-scope)
 1. [module caching](#module-caching)
 
-# Initialize
+# Initialization
 
 ```
 python3 -m venv testenv
@@ -58,7 +58,26 @@ generated in the setup call used to create the module-scoped custom fixtures.1
 
 # Module Caching
 
+This example is companion code to the
+[fixtures-can-be-requested-more-than-once-per-test-return-values-are-cached](https://docs.pytest.org/en/6.2.x/fixture.html#fixtures-can-be-requested-more-than-once-per-test-return-values-are-cached)
+section of the pytest documentation
+
+
+## Run these commands
+
 ```
 cd fixtures_are_cached
 pytest
 ```
+
+## Observe output
+
+Observe the following:
+
+- two tests run, `test_1` and `test_2`.
+- For `test_1`, during setup, all three fixture functions were called.
+- For `test_2`, there was no setup, despite `test_2` using the same fixtures.
+- The id of the fixture named `append` is the same in both tests.
+
+We can see that the fixtures were cached.
+They were scoped to the module, then they were called ONLY ONCE.
