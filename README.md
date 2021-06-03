@@ -3,6 +3,7 @@
 1. [Initialization](#initialization)
 1. [fixture with module scope](#fixture-with-module-scope)
 1. [module caching](#module-caching)
+1. [autouse](#autouse)
 
 # Initialization
 
@@ -81,3 +82,23 @@ Observe the following:
 
 We can see that the fixtures were cached.
 They were scoped to the module, then they were called ONLY ONCE.
+
+# Autouse
+
+This example is companion code to the
+[https://docs.pytest.org/en/6.2.x/fixture.html#autouse-fixtures-fixtures-you-don-t-have-to-request](autouse)
+section of the pytest documentation
+
+## Run these commands
+
+```
+cd autouse
+pytest
+```
+
+## Observe output and code
+
+Observe the following:
+
+- two tests run, `test_1` and `test_2`.
+- Despite neither test calling the append0 fixture, the list0 fixture has been modified for the body of the test.
