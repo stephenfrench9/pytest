@@ -3,6 +3,7 @@
 1. [Initialization](#initialization)
 1. [fixture with module scope](#fixture-with-module-scope)
 1. [module caching](#module-caching)
+1. [scope 0](#scope-0)   
 1. [autouse](#autouse)
 
 # Initialization
@@ -102,3 +103,26 @@ Observe the following:
 
 - two tests run, `test_1` and `test_2`.
 - Despite neither test calling the append0 fixture, the list0 fixture has been modified for the body of the test.
+
+# Scope 0   
+
+## Run these commands
+
+```
+cd autouse
+pytest
+```
+
+## Examine code, Observe output and code
+
+This module has two tests - the first passes and then the second fails, despite the tests
+being identical. 
+
+How does this happen in this case?
+
+There is an autouse fixture which modifies a module-scoped fixture. The two tests
+check the content of this module-scoped fixture, which happens to be modified during setup
+of both of the tests. The first test runs and the module-scoped fixture looks like it should
+look, and then the second tests setups, and the autouse fixture then modifies the
+module scoped fixture. Then of course the second test fails. 
+
