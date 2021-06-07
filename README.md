@@ -5,6 +5,7 @@
 1. [module caching](#module-caching)
 1. [scope 0](#scope-0)   
 1. [autouse](#autouse)
+1. [fixture errors](#fixture-errors)
 
 # Initialization
 
@@ -126,3 +127,34 @@ of both of the tests. The first test runs and the module-scoped fixture looks li
 look, and then the second tests setups, and the autouse fixture then modifies the
 module scoped fixture. Then of course the second test fails. 
 
+# Fixture Errors
+
+This is the code-along for the 
+[fixture errors section](https://docs.pytest.org/en/6.2.x/fixture.html#fixture-errors)
+of the pytest documentation.
+
+## run
+
+```
+cd fixture_errors
+pytest
+```
+
+## observe
+
+For each file, the test does not explicitly declare usage of the fixtures called
+'first' 'second' and 'third'. The 'third' fixture is an autouse fixture,
+so it is made available to the test. It has as a dependency the second fixture, so 
+the second fixture runs prior to the third, and the 'first' fixture is a dependency 
+to the second fixture, so it runs first. 
+
+For test_1, three fixture setup functions run, and there is an error during the setup for the
+third fixture. The standard out for all fixture functions is captured.
+
+For test_2, only two fixture setup functions run, because there is an error
+during the setup for the second fixture. 
+The standard out for the first two setup functions is captured, but not for the third.
+
+For test_3, ony 1 fixture setup function runs, because there is an error during the
+setup for the first fixture. 
+The standard out for only the first setup function is captured.
