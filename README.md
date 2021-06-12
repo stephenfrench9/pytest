@@ -6,6 +6,7 @@
 1. [scope 0](#scope-0)   
 1. [autouse](#autouse)
 1. [fixture errors](#fixture-errors)
+1. [fixture availability](#fixture-availability)
 
 # Initialization
 
@@ -158,3 +159,22 @@ The standard out for the first two setup functions is captured, but not for the 
 For test_3, ony 1 fixture setup function runs, because there is an error during the
 setup for the first fixture. 
 The standard out for only the first setup function is captured.
+
+# Fixture Availability
+1. [fixture availability]
+
+This is the code-along for the 
+[fixture availability](https://docs.pytest.org/en/6.2.x/fixture.html#fixture-availability)
+section of the pytest documentation.
+
+## Run
+
+```
+cd fixture_errors
+pytest
+```
+
+## Observe
+All the tests pass, nothing interesting about the output.
+Read the comments in the code for a walk-through of how fixture definitions
+are discovered.
