@@ -200,3 +200,41 @@ assign to a fixture. Welll ... what? The answer is, there is a difference betwee
 fixture availability and the scope in which the fixture is instantiated and cached.
 More concretely, the scope argument of the fixture decorator determines 'fixture sharing',
 while the placement in the text file (how indented it is), defines availability.  
+
+# conftest-py-sharing-fixtures-across-multiple-files 
+
+This is the code-along for the 
+[conftest-py-sharing-fixtures-across-multiple-files](https://docs.pytest.org/en/6.2.x/fixture.html#conftest-py-sharing-fixtures-across-multiple-files)
+of the pytest documentation.
+
+## Run
+
+```
+cd sharing_fixtures/1
+pytest 
+```
+
+## Observe
+
+The tests succeed. The tests in the two test files in this directory (or the two test modules
+in this package, if you will) are able to 'see' the fixture they are requesting,
+because this fixture is written into the package conftest and is therefore visible to
+everytest in the package. You could say this fixture is defined in the package scope.
+Note that this fixture has the default scope (scope in the sense of sharing, not visibility),
+which is function scope, so a new fixture (which in this case is a list) is created 
+for each function. The tests add 1 thing to the fixture, and then confirm that is the only
+thing in the fixture, and so the tests pass. 
+
+## Run
+
+```
+cd sharing_fixtures/2
+pytest 
+```
+
+## Observe
+
+This is exactly the same as 1/, except the fixture (written in a place where
+it is visible to the entire package) is scoped per package, rather than the
+default function. This makes the tests fail, as each test only expects
+to see the content that it added. 
