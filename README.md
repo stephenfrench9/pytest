@@ -171,10 +171,32 @@ section of the pytest documentation.
 
 ```
 cd fixture_errors
-pytest
+pytest test_1.py test_2.py
 ```
 
 ## Observe
 All the tests pass, nothing interesting about the output.
 Read the comments in the code for a walk-through of how fixture definitions
 are discovered.
+
+## Run
+
+```
+cd fixture_errors
+pytest test_3.py
+```
+
+## Observe
+Test_0 fails, because it cannot find the fixture it is requesting. The fixture is defined
+at a smaller scope, or a more local scope, or you could say a lower scope. Test_0 is 
+defined in the global namespace, it can only see up, it cannot see down (if you will)
+into the smaller scope. 
+
+Test_1 passes, it can find the fixture, because the fixture is defined in the same scope
+as the test. (it has to be the same scope or above).
+
+Note that the fixture is scoped to the session! The highest and most global scope you can
+assign to a fixture. Welll ... what? The answer is, there is a difference between
+fixture availability and the scope in which the fixture is instantiated and cached.
+More concretely, the scope argument of the fixture decorator determines 'fixture sharing',
+while the placement in the text file (how indented it is), defines availability.  
