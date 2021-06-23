@@ -7,7 +7,7 @@
 1. [autouse](#autouse)
 1. [fixture errors](#fixture-errors)
 1. [fixture availability](#fixture-availability)
-1. [conftest.py: sharing fixtures across modules (files)](#conftestpy-sharing-fixtures-across-multiple-files)
+1. [conftest.py: sharing fixtures across multiple files](#conftestpy-sharing-fixtures-across-multiple-files)
 
 # Initialization
 
@@ -205,7 +205,7 @@ while the placement in the text file (how indented it is), defines availability.
 # conftest.py: sharing fixtures across multiple files 
 
 This is the code-along for the 
-[conftest.py: sharing fixtures across files (modules)](https://docs.pytest.org/en/6.2.x/fixture.html#conftest-py-sharing-fixtures-across-multiple-files)
+[conftest.py: sharing fixtures across multiple files](https://docs.pytest.org/en/6.2.x/fixture.html#conftest-py-sharing-fixtures-across-multiple-files)
 of the pytest documentation.
 
 ## Run
