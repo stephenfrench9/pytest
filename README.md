@@ -216,14 +216,29 @@ pytest
 
 ## Observe
 
-The tests succeed. The tests in the two test files in this directory (or the two test modules
+- The tests fail, but only because of some assert 0 statements. 
+
+- If you read the output in the terminal, you see that there are two distinct
+tests collected, even though these two tests have the same name. This is 
+ok because the tests are in different modules (files).
+  
+- Observe in the output that both tests request the same fixture (list0), 
+but that the fixture takes on different values in either test.
+Specifically, the name of the file (module) is written into the fixture. 
+
+- The tests in the two test files in this directory (or the two test modules
 in this package, if you will) are able to 'see' the fixture they are requesting,
 because this fixture is written into the package conftest and is therefore visible to
-everytest in the package. You could say this fixture is defined in the package scope.
-Note that this fixture has the default scope (scope in the sense of sharing, not visibility),
-which is function scope, so a new fixture (which in this case is a list) is created 
-for each function. The tests add 1 thing to the fixture, and then confirm that is the only
-thing in the fixture, and so the tests pass. 
+every test in the package. You could say this fixture is defined in the package scope,
+or that the fixture is defined in the package (folder) namespace  
+Note that this fixture has module scope (scope in the sense of sharing, not visibility),
+so a new fixture (which in this case is a list) is created for each file.
+The fixture is defined in a package scope (it is written into a conftest). 
+The fixture has             module scope (it will be instantiated once for each module).  
+
+- The tests add 1 thing to the fixture, and then assert that is the only thing in the fixture. 
+Since the fixture is scoped to the module, it is found to be true that no other logic tampered
+with the instantiated fixture. 
 
 ## Run
 
