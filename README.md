@@ -7,7 +7,7 @@
 1. [autouse](#autouse)
 1. [fixture errors](#fixture-errors)
 1. [fixture availability](#fixture-availability)
-1. [conftest.py: sharing fixtures across modules (files)](#conftest.py-sharing-fixtures-across-multiple-files)
+1. [conftest.py: sharing fixtures across modules (files)](#conftestpy-sharing-fixtures-across-multiple-files)
 
 # Initialization
 
