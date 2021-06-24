@@ -1,6 +1,14 @@
-# Index
+# Index 
 
+### Installation
 1. [Initialization](#initialization)
+
+
+### Plugins
+
+1. [pytest django](#pytest-django)
+
+### Fixtures
 1. [fixture with module scope](#fixture-with-module-scope)
 1. [module caching](#module-caching)
 1. [scope 0](#scope-0)   
@@ -16,6 +24,36 @@ python3 -m venv testenv
 source testenv/bin/activate
 python -m pip install -r requirements.txt
 ```
+
+# pytest django
+
+[Plugins Section of pytest documentation](https://docs.pytest.org/en/6.2.x/plugins.html)
+
+### Install the Plugin: pytest django
+```
+source testenv/bin/activate
+python -m pip upgrade pip
+python -m pip install pytest-django
+```
+
+### Install the Django App
+```
+source testenv/bin/activate
+python -m pip upgrade pip
+python -m pip install django
+django-admin startproject mysite
+```
+
+### Run
+```
+PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest django_plugin --ds=mysite.settings
+```
+
+### Observe
+
+test0 requests the settings fixture. If you examine the output from the test, and the
+settings for the discovered Django Project, you can see that the settings fixture is
+populated with the values from the settings file of the discovered Django Project.
 
 # Fixture with Module Scope
 
