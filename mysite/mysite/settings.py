@@ -15,12 +15,12 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-CUSTOM_SETTING = 'This is a custom string written into settings.py'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'jlu7zl(j%&#40_y66t(@j2w0&rz19-q%h2r&pd^cxb&06vt#8#'
+SECRET_KEY = 'hpa53)=g%q04*r=qb-j4q=^^asgv=qd%kmh6+h)o8m3f!bzqj&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'polls',
 ]
 
 MIDDLEWARE = [
