@@ -31,13 +31,22 @@ thi is the code along for the
 [quick start](https://pytest-django.readthedocs.io/en/latest/#quick-start)
 and the
 [configuring django](https://pytest-django.readthedocs.io/en/latest/configuring_django.html)
-sectionsn of the pytest-django docs.
+sections of the pytest-django docs.
 
 ### Install the Plugin: pytest django
 ```
 source testenv/bin/activate
 python -m pip upgrade pip
 python -m pip install pytest-django
+```
+
+### Create a Django App
+```
+source testenv/bin/activate
+python -m pip install django
+python -m pip install ipython
+django-admin startproject mysite
+python mysite/manage.py migrate
 ```
 
 ### Run
@@ -51,20 +60,37 @@ test0 requests the settings fixture. If you examine the output from the test, an
 settings for the discovered Django Project, you can see that the settings fixture is
 populated with the values from the settings file of the discovered Django Project.
 
+test1 sets the settings.DEBUG to be True
+
+test2 asserts settings.DEBUG is True, which evalutes to false and fails the test.
+
 # pytest django 1
 This is the code along for the
 [Database Access](https://pytest-django.readthedocs.io/en/latest/database.html)
 section of the pytest django documentation.
 
-### Install the Django App
+Do a django thing in the shell (after having set up a Django app w/database in the above section, pytest django 0)
 ```
-source testenv/bin/activate
-python -m pip install django
-python -m pip install ipython
-django-admin startproject mysite
 python mysite/manage.py shell
-from django.conf import settings
+from django.contrib.auth.models import User
+user=User.objects.create_user('foo', password='bar')
+user.is_superuser=True
+user.is_staff=True
+user.save()
+assert len(User.objects.all()) == 1
 ```
+
+### Run 
+```
+PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest django_db --ds=mysite.settings
+```
+
+### Observe
+The test successfully executes code that interacts with a database. 
+Both tests add 1 user to the database and then assert that there is one user.
+Both tests are successful. 
+This shows that the database is unaffected by the execution of the test.
+
 
 # Fixture with Module Scope
 
