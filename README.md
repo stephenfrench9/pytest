@@ -16,6 +16,10 @@
 1. [fixture errors](#fixture-errors)
 1. [fixture availability](#fixture-availability)
 1. [conftest.py: sharing fixtures across multiple files](#conftestpy-sharing-fixtures-across-multiple-files)
+1. [higher-scoped-fixtures-are-executed-first](#higher-scoped-fixtures-are-executed-first)
+
+
+
 
 # Initialization
 
@@ -329,3 +333,31 @@ This is exactly the same as 1/, except the fixture (written in a place where
 it is visible to the entire package) is scoped per package, rather than the
 default function. This makes the tests fail, as each test only expects
 to see the content that it added. 
+
+# higher-scoped-fixtures-are-executed-first
+this is the code-along for the
+[higher-scoped-fixtures-are-executed-first](https://docs.pytest.org/en/6.2.x/fixture.html#higher-scoped-fixtures-are-executed-first)
+section of the pytest documentation
+
+## Run
+
+```
+pytest fixture_ordering 
+```
+
+## Observe
+There are two modules (files) in this test package (directory).
+
+test_module_1.py demonstrates that larger (or higher) scoped fixtures are executed first. 
+
+test_module_2.py demonstrates a `ScopeMismatch` error - you cannot scope a fixture the to function, 
+and then request it in a `session` scoped fixture. How would that even work - the session scope fixture
+has setup code only run 1 time for it and thten it is cached, but if you tried to access a function scoped
+fixture with it, then you would need to run setup for the session scoped object for each function. Requesting
+a fixture sort of parametrizes your fixture on that other fixture. If that other fixture varies function to function,
+well then so does your current fixture (varying function to function is emphatically not a session scope)a
+```
+ScopeMismatch: You tried to access the 'function' scoped fixture 'order' with a 'session' scoped request object, involved factories
+```
+
+
