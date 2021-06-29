@@ -17,7 +17,7 @@
 1. [fixture availability](#fixture-availability)
 1. [conftest.py: sharing fixtures across multiple files](#conftestpy-sharing-fixtures-across-multiple-files)
 1. [higher-scoped-fixtures-are-executed-first](#higher-scoped-fixtures-are-executed-first)
-
+1. [running-multiple-assert-statements-safely](#running-multiple-assert-statements-safely)
 
 
 
@@ -360,4 +360,44 @@ well then so does your current fixture (varying function to function is emphatic
 ScopeMismatch: You tried to access the 'function' scoped fixture 'order' with a 'session' scoped request object, involved factories
 ```
 
+
+# running-multiple-assert-statements-safely
+This is the code-along for the
+[running-multiple-assert-statements-safely](https://docs.pytest.org/en/6.2.x/fixture.html#running-multiple-assert-statements-safely)
+section of the documentation.
+
+lets say you have many setup steps, and you then you want to run multiple assert statements.
+
+If you run all the assert statements immediatly after setup, then if one fails, the other asserts will not run
+and you will lose all the work that was done for setup.
+
+The recommended pattern is to create a class for this situation, where the setup work is done in an autouse fixture
+scoped to the larger class scope (scoping, repeatability), and situated in the larger class scope (discoverability). 
+Each assert statement is a function which exists in the class scope, and which can therefore target (can see)
+the setup logic. We are assured that the setup logic only runs once, because the setup logic is scoped to the class,
+and all the assert statements exist in the class.
+
+## Run
+
+```
+pytest multiple_assert 
+```
+
+Remember that pytests follows a philosophy or theme of
+[Arrange, Act, Assert, Cleanup](https://docs.pytest.org/en/6.2.x/fixture.html#what-fixtures-are)
+when it comes to running a test. 
+
+## Observe
+
+The 'act' logic ran only once. (in the output, you see 'running act logic', only 1 time)
+
+We know exactly which assert statements failed (asserts 1, 3) and which succeeded (asserts 0, 2,3).
+
+Had we not followed this class based pattern where the "act logic" (official pytest term) was placed in
+a class, scoped to that class, and marked as autouse, we would not have known which tests failed and which
+tests passed. 
+
+The 'act' step is autouse - this guarantees it runs after the 'arrange' step, which is not auto-use. This also
+guarantees that the 'act' logic will run before all the tests, and since the act logic has been scoped to the class, 
+we can see that it will run only once.
 
