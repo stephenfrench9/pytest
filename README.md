@@ -13,6 +13,7 @@
 1. [module caching](#module-caching)
 1. [scope 0](#scope-0)   
 1. [autouse](#autouse)
+1. [scope: sharing fixtures across classes modules packages or session](#scope-sharing-fixtures-across-classes-modules-packages-or-session)
 1. [fixture errors](#fixture-errors)
 1. [fixture availability](#fixture-availability)
 1. [conftest.py: sharing fixtures across multiple files](#conftestpy-sharing-fixtures-across-multiple-files)
@@ -185,6 +186,62 @@ Observe the following:
 
 - two tests run, `test_1` and `test_2`.
 - Despite neither test calling the append0 fixture, the list0 fixture has been modified for the body of the test.
+
+# scope sharing fixtures across classes modules packages or session
+This is the code-along for the
+[Scope: sharing fixtures across classes..](https://docs.pytest.org/en/6.2.x/fixture.html#scope-sharing-fixtures-across-classes-modules-packages-or-session)
+section of the documentation.
+
+This section also considers a discussion of the output that pytest provides, how the output reflects fixture
+scoping, and how pytest recoginizes same-named tests in different modules as distinct.
+
+## Run 
+
+```
+pytest scope__sharing_fixtures_across_classes
+```
+
+## Observe
+
+The tests fail for demo purporses. 
+When tests fail in pytest,
+output is printed to the console. 
+There is a section of output for each test that failed.
+
+Each section contains
+- a list of fixtures requested by the test
+- the test defintion
+- 'Captured stdout setup' (if stdout was captured during setup)
+- 'Captured stdout call' (if stdout was captured during 'call', the actual execution of the test)
+
+Note that five tests are defined across two modules.
+Module 1 contains test_1 and test_2. 
+Module 2 contains test_1, test_2, and test_2.
+In this example, four tests are discovered and executed.
+
+Note that the module name is not printed to the output, only the test name. Despite this, tests
+of the same name but in different modules are considered distinct tests.
+
+Let us examine the output for test__module_1::test_1.
+
+- Two fixtures are printed. For the smpt connection,
+the print method returns an unfamiliar looking thing with a memory address. 
+For the fixture `dict0`, the actual dictionary is printed.
+  
+- The test definition is printed, with the failing line highlighted.
+
+- Stdout was captured during setup - this is printed. In this case it happens to be a print statement executed
+durint instantiation of a module based fixture called 'smpt_connection'.
+  
+- Stdout was captured from the actual execution of the test.
+
+Let us compare this to the output for the sister-test, test__module_1::test_2.
+
+- only 1 fixture was requested; it is the smtp connection object, and it is printed.
+ 
+- No stdout was captured during setup for this test - this is because the fixture which this test requested
+was scoped to the module, and a test in this module had already requested the fixture, so the fixture object
+was available in the cache. 
 
 # Scope 0   
 
