@@ -19,6 +19,8 @@
 1. [conftest.py: sharing fixtures across multiple files](#conftestpy-sharing-fixtures-across-multiple-files)
 1. [higher-scoped-fixtures-are-executed-first](#higher-scoped-fixtures-are-executed-first)
 1. [running-multiple-assert-statements-safely](#running-multiple-assert-statements-safely)
+1. [#fixtures-can-introspect-the-requesting-test-context](#fixtures-can-introspect-the-requesting-test-context)
+
 
 
 
@@ -458,3 +460,44 @@ The 'act' step is autouse - this guarantees it runs after the 'arrange' step, wh
 guarantees that the 'act' logic will run before all the tests, and since the act logic has been scoped to the class, 
 we can see that it will run only once.
 
+# fixtures-can-introspect-the-requesting-test-context
+
+This is the code-along for the 
+[fixtures-can-introspect-the-requesting-test-context](https://docs.pytest.org/en/6.2.x/fixture.html#fixtures-can-introspect-the-requesting-test-context)
+section of the pytest documentation.
+
+## Run
+
+```
+pytest fixtures-can-introspect
+```
+
+## Observe
+
+Note that each module has a failing test and a passing test. 
+
+Even though the passing tests (which are in different modules) use the same fixture, the smtp connection is 
+to different servers.
+
+The passing tests use fixtures which are scoped to the function. Stdout was captured during setup of these tests
+that shows the name of the requesting function, 
+the name of the module from where the request originated, 
+and the list of variables available in the module namespace. 
+
+The failing tests use fixtures which are scoped to the module. The fixtures error during setup, which is recorded
+explicitly in the error message with the heading "ERROR at setup of test_2". The actual error message is:
+
+`AttributeError: function not available in module-scoped context`
+
+The fixture tries to request the function name from the request object (the request object holds information 
+about the requesting test). There was a function that requested this fixture - that is why this fixture logic
+is running. Why is the function not available? There are many ways that the authors/developers could have set this up,
+but one way you could probably think of it as the function name is in that request object, but the author of the test
+is forbidden to reference it given that the fixture has been scoped to the module. If the fixture is scoped to the
+module, then references to function scoped fields in the request object will generate an AttributeError. If this 
+were not the case, then you might run into a problem where the fixture which is used by a test is parametrized by 
+a different function's name, because the other function triggered the fixture to be instantiated and then cached. 
+
+You can make a function (test) aware of its name using this technique. Scope a fixture to the function, have it 
+extract from the request objec the name of the function (test) which requested it, and then return that name as 
+the fixture value. You can't really do this in Python, in part because its not that useful. 
