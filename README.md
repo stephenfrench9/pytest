@@ -76,7 +76,9 @@ This is the code along for the
 [Database Access](https://pytest-django.readthedocs.io/en/latest/database.html)
 section of the pytest django documentation.
 
-Do a django thing in the shell (after having set up a Django app w/database in the above section, pytest django 0)
+Do a django thing in the shell (after completing pytest django 0)
+This is just to show that a model exists, as does the table in the database, and that it all works.
+Note that you don't actually need the database to exist in order to test the model. 
 ```
 python mysite/manage.py shell
 from django.contrib.auth.models import User
