@@ -107,7 +107,7 @@ This is the code-along for the
 [basic usage section](https://factoryboy.readthedocs.io/en/stable/introduction.html#basic-usage)
 of the factoryboy plugin.
 
-The rest of this factoryboy section is done from the djnago shell.
+The rest of this factoryboy section is done from the Django shell.
 ```
 python mysite/manage.py shell
 ```
@@ -140,6 +140,7 @@ default.is_staff == True
 default.email == 'default'
 ```
 
+#### Lazy Functions
 Lazy Functions can be used to fill model fields.
 I guess it is lazy in the sense that the function is not evaluated until the object is actually instantiated?
 I guess you could say that the value for a LazyFunction field is decided at runtime. 
@@ -152,6 +153,7 @@ assert user_lazyfunction.password == 'default--from-lazy-function'
 assert user_lazyfunction.username == 'default'
 ```
 
+#### Lazy Attributes:
 Lazy Attributes can be used to fill model fields, this time with data from the object being created.
 Lazy Attributes are also functions! These functions accept the object being instantiated though, and 
 can read the other fields before deciding what value to assign to the LazyAttribute field. I guess you could
@@ -164,12 +166,34 @@ assert user_lazyattribute.password == 'default--from-lazy-function'
 assert user_lazyattribute.email == 'stephen@gmail.com'
 ```
 
+#### Non KWarg args:
+[non KWarg args](https://factoryboy.readthedocs.io/en/stable/introduction.html#non-kwarg-arguments)
+Normally,the fields of the Factory class have the name of the instantiated classes' kwargs.
+You can give the fields of the Factory class their own name, and then construct a tuple
+which will be used as the arguments to instantiate the class (the overall context here
+is that we are using a factory class to instantiate another class, this other class
+is what I mean when I say 'the class').
+```
+python mysite/manage.py shell
+from factoryboy_example.example_factories import Mine
+# instantiate the class with three positional arguments
+mine = Mine(1, 2, 3)
+assert mine.a == 1; assert mine.b == 2; assert mine.c == 3
 
+from factoryboy_example.example_factories import MineFactory
+# MineFactory passes a tuple of three positional arguments as the argument
+# to instantiate the Mine Class. Note that the fields in the mine class, as
+# well as the parameters for the init function, are called 'a', 'b', and 'c'.
+# When we call the factory, we overwrite the MineFactory field 'second_position,
+# which is in turn provided by MineFactory as the second positional argument to
+# the class we are instantiating.
+mine = MineFactory(second_position=33)
+assert mine.a == 1; assert mine.b == 33; assert mine.c == 3
+```
 
 # Fixture with Module Scope
 
 ### Run commands 
-
 ```
 cd fixture_with_module_scope
 pytest

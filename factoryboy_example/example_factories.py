@@ -29,3 +29,23 @@ class ExampleUserFactory_lazyattribute(ExampleUserFactory_lazyfunction):
     @factory.lazy_attribute
     def email(self):
         return f'{self.username}@gmail.com'
+
+
+class Mine(object):
+    """
+    This class can accept three positional arguments.
+    """
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
+
+
+class MineFactory(factory.Factory):
+    class Meta:
+        model = Mine
+        inline_args = ('first_position', 'second_position', 'third_position')
+
+    first_position = 1
+    second_position = 2
+    third_position = 3
