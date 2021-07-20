@@ -130,6 +130,7 @@ stephen.email == 'stephen@stephen.com'
 
 I want a user with only defaults.
 ```
+from factoryboy_example.example_factories import ExampleUserFactory
 default = ExampleUserFactory()
 # Check Default fields
 default.username == 'default'
@@ -139,7 +140,9 @@ default.is_staff == True
 default.email == 'default'
 ```
 
-Lazy functions can be used to fill model fields.
+Lazy Functions can be used to fill model fields.
+I guess it is lazy in the sense that the function is not evaluated until the object is actually instantiated?
+I guess you could say that the value for a LazyFunction field is decided at runtime. 
 ```
 from factoryboy_example.example_factories import ExampleUserFactory_lazyfunction
 user_lazyfunction = ExampleUserFactory_lazyfunction()
@@ -148,6 +151,18 @@ user_lazyfunction.password == 'default--from-lazy-function'
 # check a default field
 user_lazyfunction.username == 'default'
 ```
+
+Lazy Attributes can be used to fill model fields, this time with data from the object being created.
+Lazy Attributes are also functions! These functions accept the object being instantiated though, and 
+can read the other fields before deciding what value to assign to the LazyAttribute field. I guess you could
+again say something like: LazyAtribute fields have their value calculated at runtime. LazyAttribute fields are 
+special though in that they can depend on other fields. 
+```
+from factoryboy_example.example_factories import ExampleUserFactory_lazyattribute
+user_lazyattribute = ExampleUserFactory_lazyattribute(username='stephen')
+assert user_lazyattribute.email == 'stephen@gmail.com'
+```
+
 
 
 # Fixture with Module Scope
