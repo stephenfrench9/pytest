@@ -21,34 +21,11 @@ def password():
     return 'default--from-lazy-function'
 
 
-class ExampleUserFactory_lazyfunction(factory.Factory):
-    class Meta:
-        model = User
-
-    @factory.sequence
-    def id(n):
-        return n
-
-    username = 'default'
+class ExampleUserFactory_lazyfunction(ExampleUserFactory):
     password = factory.LazyFunction(password)
-    is_superuser = True
-    is_staff = True
-    email = 'default'
 
 
-class ExampleUserFactory_lazyattribute(factory.Factory):
-    class Meta:
-        model = User
-
-    @factory.sequence
-    def id(n):
-        return n
-
+class ExampleUserFactory_lazyattribute(ExampleUserFactory_lazyfunction):
     @factory.lazy_attribute
     def email(self):
         return f'{self.username}@gmail.com'
-
-    username = 'default'
-    password = factory.LazyFunction(password)
-    is_superuser = True
-    is_staff = True

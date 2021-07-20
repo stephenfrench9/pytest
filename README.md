@@ -147,9 +147,9 @@ I guess you could say that the value for a LazyFunction field is decided at runt
 from factoryboy_example.example_factories import ExampleUserFactory_lazyfunction
 user_lazyfunction = ExampleUserFactory_lazyfunction()
 # check the field that was generated using a lazy function
-user_lazyfunction.password == 'default--from-lazy-function'
+assert user_lazyfunction.password == 'default--from-lazy-function'
 # check a default field
-user_lazyfunction.username == 'default'
+assert user_lazyfunction.username == 'default'
 ```
 
 Lazy Attributes can be used to fill model fields, this time with data from the object being created.
@@ -160,6 +160,7 @@ special though in that they can depend on other fields.
 ```
 from factoryboy_example.example_factories import ExampleUserFactory_lazyattribute
 user_lazyattribute = ExampleUserFactory_lazyattribute(username='stephen')
+assert user_lazyattribute.password == 'default--from-lazy-function'
 assert user_lazyattribute.email == 'stephen@gmail.com'
 ```
 
