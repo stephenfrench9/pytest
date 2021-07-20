@@ -7,6 +7,7 @@
 
 1. [pytest django 0](#pytest-django-0)
 1. [pytest django 1](#pytest-django-1)
+1. [factoryboy](#factoryboy)
 
 ### Fixtures
 1. [fixture with module scope](#fixture-with-module-scope)
@@ -100,6 +101,38 @@ Both tests add 1 user to the database and then assert that there is one user.
 Both tests are successful. 
 This shows that the database is unaffected by the execution of the test.
 
+
+#factoryboy
+This is the code-along for the
+[basic usage section](https://factoryboy.readthedocs.io/en/stable/introduction.html#basic-usage)
+of the factoryboy plugin.
+
+I want to instantiate a User. 
+I want that User to have default configuration. 
+I will provide only the first name and last name.
+
+```
+python mysite/manage.py shell
+from factoryboy_example.example_factories import ExampleUserFactory
+stephen = ExampleUserFactory(username='stephen', email='stephen@stephen.com')
+# Check Default fields
+stephen.email == 'default'
+stephen.password == 'default'
+stephen.is_superuser == True
+stephen.is_staff == True
+# Check Custom fields
+stephen.username == 'stephen' 
+stephen.email == 'stephen@stephen.com'
+
+
+default = ExampleUserFactory()
+# Check Default fields
+default.username == 'default'
+default.password == 'default'
+default.is_superuser == True
+default.is_staff == True
+default.email == 'default'
+```
 
 # Fixture with Module Scope
 
