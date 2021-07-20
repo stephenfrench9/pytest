@@ -15,3 +15,22 @@ class ExampleUserFactory(factory.Factory):
     is_superuser = True
     is_staff = True
     email = 'default'
+
+
+def password():
+    return 'default--from-lazy-function'
+
+
+class ExampleUserFactory_lazyfunction(factory.Factory):
+    class Meta:
+        model = User
+
+    @factory.sequence
+    def id(n):
+        return n
+
+    username = 'default'
+    password = factory.LazyFunction(password)
+    is_superuser = True
+    is_staff = True
+    email = 'default'

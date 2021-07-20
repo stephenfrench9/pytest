@@ -107,12 +107,15 @@ This is the code-along for the
 [basic usage section](https://factoryboy.readthedocs.io/en/stable/introduction.html#basic-usage)
 of the factoryboy plugin.
 
-I want to instantiate a User. 
-I want that User to have default configuration. 
-I will provide only the first name and last name.
-
+The rest of this factoryboy section is done from the djnago shell.
 ```
 python mysite/manage.py shell
+```
+
+I want to instantiate a User. 
+I want that User to have custom email and username, 
+otherwise, that User will have default configuration. 
+```
 from factoryboy_example.example_factories import ExampleUserFactory
 stephen = ExampleUserFactory(username='stephen', email='stephen@stephen.com')
 # Check Default fields
@@ -123,8 +126,10 @@ stephen.is_staff == True
 # Check Custom fields
 stephen.username == 'stephen' 
 stephen.email == 'stephen@stephen.com'
+```
 
-
+I want a user with only defaults.
+```
 default = ExampleUserFactory()
 # Check Default fields
 default.username == 'default'
@@ -133,6 +138,17 @@ default.is_superuser == True
 default.is_staff == True
 default.email == 'default'
 ```
+
+Lazy functions can be used to fill model fields.
+```
+from factoryboy_example.example_factories import ExampleUserFactory_lazyfunction
+user_lazyfunction = ExampleUserFactory_lazyfunction()
+# check the field that was generated using a lazy function
+user_lazyfunction.password == 'default--from-lazy-function'
+# check a default field
+user_lazyfunction.username == 'default'
+```
+
 
 # Fixture with Module Scope
 
