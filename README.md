@@ -191,7 +191,9 @@ mine = MineFactory(second_position=33)
 assert mine.a == 1; assert mine.b == 33; assert mine.c == 3
 ```
 
-#### Parameters
+#### Parameters and Traits
+[Code along for this section](https://factoryboy.readthedocs.io/en/stable/introduction.html#altering-a-factory-s-behavior-parameters-and-traits)
+
 You can pass to a Factory a parameter which is then used by a LazyAttribute to calculate the actual fields of the
 generated object. Recall that lazy attributes can compute object attributes/fields depending on values already
 assigned to the object, in this way they are lazy.
@@ -199,8 +201,11 @@ assigned to the object, in this way they are lazy.
 A 'Rental' has a start and an end date:
 ```
 python mysite/manage.py shell
+import datetime
 from factoryboy_example.example_factories import Rental
 rental0 = Rental(datetime.datetime(2009, 1, 1), datetime.datetime(2010, 1, 1))
+print(rental0.begin)
+print(rental0.end)
 ```
 
 The factory computes the end date based off of a random start date (a fuzzy date),
@@ -208,8 +213,20 @@ and the duration parameter.
 ```
 python mysite/manage.py shell
 from factoryboy_example.example_factories import RentalFactory
-rental0 = RentalFactory()
+rental0 = RentalFactory(duration=19)
+print(rental0.begin)
+print(rental0.end)
 ```
+
+If you have a group of attributes that you want set a certain way in certain situations, use traits.
+```
+python mysite/manage.py shell
+from factoryboy_example.example_factories import RentalFactory
+rental0 = RentalFactory(old=True)
+print(rental0.begin)
+print(rental0.end)
+```
+
 
 # Fixture with Module Scope
 

@@ -64,7 +64,9 @@ class RentalFactory(factory.Factory):
         model = Rental
 
     begin = factory.fuzzy.FuzzyDate(start_date=datetime.date(2000, 1, 1))
-    end = factory.LazyAttribute(lambda o: o.begin + o.duration)
+    end = factory.LazyAttribute(lambda o: o.begin + datetime.timedelta(days=o.duration))
 
     class Params:
-        duration = datetime.timedelta(days=5)
+        duration = 5
+        old = factory.Trait(begin=datetime.date(1900, 1, 1), end=datetime.date(1900,1,3))
+
