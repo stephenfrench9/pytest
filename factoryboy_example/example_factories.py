@@ -49,3 +49,22 @@ class MineFactory(factory.Factory):
     first_position = 1
     second_position = 2
     third_position = 3
+
+class Rental(object):
+    def __init__(self, begin, end):
+        self.begin = begin
+        self.end = end
+
+import factory.fuzzy
+
+import datetime
+
+class RentalFactory(factory.Factory):
+    class Meta:
+        model = Rental
+
+    begin = factory.fuzzy.FuzzyDate(start_date=datetime.date(2000, 1, 1))
+    end = factory.LazyAttribute(lambda o: o.begin + o.duration)
+
+    class Params:
+        duration = datetime.timedelta(days=5)

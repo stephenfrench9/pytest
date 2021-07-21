@@ -191,6 +191,26 @@ mine = MineFactory(second_position=33)
 assert mine.a == 1; assert mine.b == 33; assert mine.c == 3
 ```
 
+#### Parameters
+You can pass to a Factory a parameter which is then used by a LazyAttribute to calculate the actual fields of the
+generated object. Recall that lazy attributes can compute object attributes/fields depending on values already
+assigned to the object, in this way they are lazy.
+
+A 'Rental' has a start and an end date:
+```
+python mysite/manage.py shell
+from factoryboy_example.example_factories import Rental
+rental0 = Rental(datetime.datetime(2009, 1, 1), datetime.datetime(2010, 1, 1))
+```
+
+The factory computes the end date based off of a random start date (a fuzzy date),
+and the duration parameter.
+```
+python mysite/manage.py shell
+from factoryboy_example.example_factories import RentalFactory
+rental0 = RentalFactory()
+```
+
 # Fixture with Module Scope
 
 ### Run commands 
