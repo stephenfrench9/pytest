@@ -35,6 +35,7 @@ class Mine(object):
     """
     This class can accept three positional arguments.
     """
+
     def __init__(self, a, b, c):
         self.a = a
         self.b = b
@@ -50,14 +51,17 @@ class MineFactory(factory.Factory):
     second_position = 2
     third_position = 3
 
+
 class Rental(object):
     def __init__(self, begin, end):
         self.begin = begin
         self.end = end
 
+
 import factory.fuzzy
 
 import datetime
+
 
 class RentalFactory(factory.Factory):
     class Meta:
@@ -68,5 +72,4 @@ class RentalFactory(factory.Factory):
 
     class Params:
         duration = 5
-        old = factory.Trait(begin=datetime.date(1900, 1, 1), end=datetime.date(1900,1,3))
-
+        old = factory.Trait(begin=datetime.date(1900, 1, 1), end=datetime.date(1900, 1, 3))
