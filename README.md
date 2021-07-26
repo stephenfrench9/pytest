@@ -642,3 +642,12 @@ a different function's name, because the other function triggered the fixture to
 You can make a function (test) aware of its name using this technique. Scope a fixture to the function, have it 
 extract from the request objec the name of the function (test) which requested it, and then return that name as 
 the fixture value. You can't really do this in Python, in part because its not that useful. 
+
+
+# Match Error Messages
+This file demonstrates how to write tests which expects certain Errors and Exceptions.
+Moreover, with pytest you can demand specific error messages of your tests.
+
+```
+pytest exceptions.py
+```
