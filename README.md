@@ -240,6 +240,19 @@ print(rental0.begin)
 print(rental0.end)
 ```
 
+#### build vs. create
+Does the factory save the item to the database?
+```
+python mysite/manage.py shell
+
+from django.contrib.auth.models import User
+print(f"{'len(User.objects.all()): '}{len(User.objects.all())}")
+from factoryboy_example.example_factories import ExampleUserFactory
+stephen = ExampleUserFactory(username='stephen', email='stephen@stephen.com')
+print(f"{'len(User.objects.all()): '}{len(User.objects.all())}")
+```
+
+from django.contrib.auth.models import User
 
 # Fixture with Module Scope
 
