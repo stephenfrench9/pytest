@@ -129,6 +129,22 @@ The fixture is scoped to the module.
 The fixture definition calls for a new database object. 
 The test errors on setup.
 
+# Experiments: Oxy2
+When an autouse fixture is defined in a modulet that contains a class with tests,
+the tests in the class request the autouse fixture as scoped in the function definition,
+rather than the class as a whole automatically requesting the autofixture as scoped to the class.
+So this is not an oxymoron.
+
+
+#### Run
+```
+PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest experiments/oxy2/test0.py --ds=mysite.settings
+```
+
+#### Observe
+No errors, everythin passes, because the tests in the class consume the fixture as being scoped to the function.
+
+
 #factoryboy
 This is the code-along for the
 [basic usage section](https://factoryboy.readthedocs.io/en/stable/introduction.html#basic-usage)
