@@ -146,6 +146,26 @@ PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest experiments/oxy2/
 #### Observe
 No errors, everythin passes, because the tests in the class consume the fixture as being scoped to the function.
 
+# Experiments: django_db_setup interferance
+You can scope a fixture to the module, and then add to the database.
+I know, that is supposed to be an oxymoron.
+But when you use this special fixture called django_db_setup,
+then you CAN do this stuff. 
+
+But be careful, you are modifying the test database permanently.
+
+
+#### Run
+```
+PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest experiments/django_db_setup/test0.py --ds=mysite.settings
+```
+
+#### Observe
+The test requests a fixture.
+The fixture is scoped to the module.
+The fixture definition calls for a new database object. 
+The test errors on setup.
+
 
 #factoryboy
 This is the code-along for the
