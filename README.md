@@ -166,6 +166,15 @@ The fixture is scoped to the module.
 The fixture definition calls for a new database object. 
 The test errors on setup.
 
+# Experiments: watch the database
+
+#### Run
+```
+PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest experiments/watch/test0.py --ds=mysite.settings --reuse-db
+```
+
+#### Observe
+
 
 #factoryboy
 This is the code-along for the
