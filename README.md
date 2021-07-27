@@ -101,12 +101,12 @@ Both tests add 1 user to the database and then assert that there is one user.
 Both tests are successful. 
 This shows that the database is unaffected by the execution of the test.
 
-# Experiment: Fixtures Modify The Database
+# Experiments: Fixtures Modify The Database
 Can I add an entry to the test database with one fixture, so that I can access it with another fixture?
 
 #### Run
 ```
-PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest experiments/fixture_cleanup/test0.py --ds=mysite.settings
+PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest experiments/fixtures_modify_the_database/test0.py --ds=mysite.settings
 ```
 
 #### Observe
@@ -114,7 +114,7 @@ Both tests add an entry to the database via a fixture.
 Both tests successfully retrieve the entry they added.
 Both tests show they cannot retrieve the entry added by the other test. 
 
-# Experiment: Oxymoron
+# Experiments: Oxymoron
 A Module-scoped fixture that modifies the database is an oxymoron.
 
 

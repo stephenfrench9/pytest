@@ -8,7 +8,7 @@ def fixture_A():
     return
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def fixture_B():
     user = User.objects.create_user('fixture_B', password='fixture_B')
     return
