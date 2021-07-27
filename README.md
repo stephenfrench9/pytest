@@ -103,6 +103,8 @@ This shows that the database is unaffected by the execution of the test.
 
 # Experiments: Fixtures Modify The Database
 Can I add an entry to the test database with one fixture, so that I can access it with another fixture?
+The [relevant section of the docs](https://pytest-django.readthedocs.io/en/latest/helpers.html#pytest-mark-django-db-request-database-access)
+The idea is that each test gets a transaction that is rolled back at the end of the test. 
 
 #### Run
 ```
