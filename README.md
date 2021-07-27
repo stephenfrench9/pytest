@@ -101,7 +101,7 @@ Both tests add 1 user to the database and then assert that there is one user.
 Both tests are successful. 
 This shows that the database is unaffected by the execution of the test.
 
-# Experiment - Fixture Modifying Database
+# Experiment: Fixtures Modify The Database
 Can I add an entry to the test database with one fixture, so that I can access it with another fixture?
 
 #### Run
@@ -114,6 +114,20 @@ Both tests add an entry to the database via a fixture.
 Both tests successfully retrieve the entry they added.
 Both tests show they cannot retrieve the entry added by the other test. 
 
+# Experiment: Oxymoron
+A Module-scoped fixture that modifies the database is an oxymoron.
+
+
+#### Run
+```
+PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest experiments/oxymoron/test0.py --ds=mysite.settings
+```
+
+#### Observe
+The test requests a fixture.
+The fixture is scoped to the module.
+The fixture definition calls for a new database object. 
+The test errors on setup.
 
 #factoryboy
 This is the code-along for the
