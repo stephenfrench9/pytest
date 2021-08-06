@@ -170,13 +170,20 @@ The test errors on setup.
 
 #### Run
 ```
+python manage.py migrate
 PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest experiments/watch/test0.py --ds=mysite.settings --reuse-db
+python manage.py dbshell
+.tables
+select * from polls_question;
+
+python manage.py shell
+# modify the database
 ```
 
 #### Observe
 
 
-#factoryboy
+# factoryboy
 This is the code-along for the
 [basic usage section](https://factoryboy.readthedocs.io/en/stable/introduction.html#basic-usage)
 of the factoryboy plugin.
