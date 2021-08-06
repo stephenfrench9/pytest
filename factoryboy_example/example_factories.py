@@ -6,10 +6,6 @@ class ExampleUserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    @factory.sequence
-    def id(n):
-        return n
-
     username = 'default'
     password = 'default'
     is_superuser = True
@@ -17,9 +13,21 @@ class ExampleUserFactory(factory.django.DjangoModelFactory):
     email = 'default'
 
 
+class ExampleUserFactory_sequence(ExampleUserFactory):
+
+    @factory.sequence
+    def id(n):
+        return n
+
+    @factory.sequence
+    def username(n):
+        new = f'{"default"}{str(n)}'
+        print("orca")
+        print(new)
+        return new
+
 def password():
     return 'default--from-lazy-function'
-
 
 class ExampleUserFactory_lazyfunction(ExampleUserFactory):
     password = factory.LazyFunction(password)

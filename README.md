@@ -190,6 +190,7 @@ of the factoryboy plugin.
 
 The rest of this factoryboy section is done from the Django shell.
 ```
+source testenv/bin/activate
 python mysite/manage.py shell
 ```
 
@@ -219,12 +220,74 @@ default.password == 'default'
 default.is_superuser == True
 default.is_staff == True
 default.email == 'default'
+exit()
 ```
+
+#### Sequences
+[Sequences](https://factoryboy.readthedocs.io/en/stable/introduction.html#sequences)
+In the previous example, note that the id field is being automatically incremented. 
+This is something that User does automatically, shown below
+
+```
+source testenv/bin/activate
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from django.contrib.auth.models import User 
+j = User(username='ddd')
+assert j.id == None
+j.save()
+assert j.id == 1
+exit()
+from django.contrib.auth.models import User
+j = User(username='fff')
+assert j.id == None
+j.save()
+j.id == 2
+exit()
+```
+
+Maybe all Django models do this automatically; it is a default of the model to look at the most recent primary key
+when saving a new object. It seems like the pk is assigned at save.
+
+But, What if you want to make a bunch of default users in a row?
+
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from factoryboy_example.example_factories import ExampleUserFactory
+default = ExampleUserFactory()
+default1 = ExampleUserFactory()
+default2 = ExampleUserFactory()
+exit()
+```
+
+It errors. Try this:
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from factoryboy_example.example_factories import ExampleUserFactory_sequence
+default = ExampleUserFactory_sequence()
+default1 = ExampleUserFactory_sequence()
+default2 = ExampleUserFactory_sequence()
+exit()
+```
+
+Note that the sequence itself (1,2,3,4 ...) is shared between attributes. Morover, the docs promise that
+the sequence belongs to the mother class. If any child class requests for an interger from the sequence 
+to incorporate into a field, that sequence increments to the next integer.
+[Inheritance With Regards to the Sequence](https://factoryboy.readthedocs.io/en/stable/reference.html#inheritance)
 
 #### Lazy Functions
 Lazy Functions can be used to fill model fields.
 I guess it is lazy in the sense that the function is not evaluated until the object is actually instantiated?
-I guess you could say that the value for a LazyFunction field is decided at runtime. 
+I guess you could say that the value for a LazyFunction field is decided at runtime.
+Note that the username for this new user will be the default. It will clash with old users who got the same default.
 ```
 from factoryboy_example.example_factories import ExampleUserFactory_lazyfunction
 user_lazyfunction = ExampleUserFactory_lazyfunction()
