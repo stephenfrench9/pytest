@@ -22,9 +22,6 @@
 1. [running-multiple-assert-statements-safely](#running-multiple-assert-statements-safely)
 1. [#fixtures-can-introspect-the-requesting-test-context](#fixtures-can-introspect-the-requesting-test-context)
 
-
-
-
 # Initialization
 
 ```
@@ -229,7 +226,6 @@ In the previous example, note that the id field is being automatically increment
 This is something that User does automatically, shown below
 
 ```
-source testenv/bin/activate
 rm mysite/db.sqlite3
 python mysite/manage.py migrate
 python mysite/manage.py shell
@@ -239,8 +235,7 @@ j = User(username='ddd')
 assert j.id == None
 j.save()
 assert j.id == 1
-exit()
-from django.contrib.auth.models import User
+
 j = User(username='fff')
 assert j.id == None
 j.save()
@@ -265,7 +260,7 @@ default2 = ExampleUserFactory()
 exit()
 ```
 
-It errors. Try this:
+It errors. Try a different factory, that increments the username each time it is called:
 ```
 rm mysite/db.sqlite3
 python mysite/manage.py migrate

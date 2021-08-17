@@ -16,10 +16,6 @@ class ExampleUserFactory(factory.django.DjangoModelFactory):
 class ExampleUserFactory_sequence(ExampleUserFactory):
 
     @factory.sequence
-    def id(n):
-        return n
-
-    @factory.sequence
     def username(n):
         new = f'{"default"}{str(n)}'
         print("orca")
