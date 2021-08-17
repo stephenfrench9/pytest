@@ -184,63 +184,23 @@ This is the code-along for the
 [basic usage section](https://factoryboy.readthedocs.io/en/stable/introduction.html#basic-usage)
 of the factoryboy plugin.
 
+
+#### Basic Factoryboy Usage
 Venv, for reference
 ```
 source testenv/bin/activate
 ```
 
-How to Clean the Database
+Clean the Database
 ```
 rm mysite/db.sqlite3
 python mysite/manage.py migrate
 python mysite/manage.py shell
 ```
 
-I want to instantiate a User. 
-I want that User to have custom email and username, 
-otherwise, that User will have default configuration. 
-```
-from factoryboy_example.example_factories import ExampleUserFactory
-stephen = ExampleUserFactory(username='stephen', email='stephen@stephen.com')
-# Check Default fields
-stephen.email == 'default'
-stephen.password == 'default'
-stephen.is_superuser == True
-stephen.is_staff == True
-# Check Custom fields
-stephen.username == 'stephen' 
-stephen.email == 'stephen@stephen.com'
-```
-
-I want a user with only defaults.
-```
-from factoryboy_example.example_factories import ExampleUserFactory
-default = ExampleUserFactory()
-# Check Default fields
-default.username == 'default'
-default.password == 'default'
-default.is_superuser == True
-default.is_staff == True
-default.email == 'default'
-```
-
-Note that ids exist, and stuff was saved to the database.
+Background:
+Django manages the pk and assigns at save.
 pks start at 1
-```
-stephen.id == 1
-default.id == 2
-exit()
-python mysite/manage.py shell
-from django.contrib.auth.models import User
-len(User.objects.all()) == 2
-```
-
-#### Sequences
-[Sequences](https://factoryboy.readthedocs.io/en/stable/introduction.html#sequences)
-In the previous example, note that the id field is being automatically incremented. 
-This is something that User does automatically, shown below. (The factory was 
-automatically saving to the database)
-
 ```
 rm mysite/db.sqlite3
 python mysite/manage.py migrate
@@ -259,7 +219,46 @@ j.id == 2
 exit()
 ```
 
-Django assigns a pk at save.
+Use a Factory to instantiate a User.
+The factory offers defaults for all fields.
+```
+from factoryboy_example.example_factories import ExampleUserFactory
+default = ExampleUserFactory()
+# Check Default fields
+default.username == 'default'
+default.password == 'default'
+default.is_superuser == True
+default.is_staff == True
+default.email == 'default'
+```
+
+The User has a custom email and username. 
+```
+from factoryboy_example.example_factories import ExampleUserFactory
+stephen = ExampleUserFactory(username='stephen', email='stephen@stephen.com')
+# Check Default fields
+stephen.email == 'default'
+stephen.password == 'default'
+stephen.is_superuser == True
+stephen.is_staff == True
+# Check Custom fields
+stephen.username == 'stephen' 
+stephen.email == 'stephen@stephen.com'
+```
+
+Confirm that ids exist, and rows were saved to the database.
+pks start at 1.
+```
+stephen.id == 1
+default.id == 2
+exit()
+python mysite/manage.py shell
+from django.contrib.auth.models import User
+len(User.objects.all()) == 2
+```
+
+#### Sequences
+[Sequences](https://factoryboy.readthedocs.io/en/stable/introduction.html#sequences)
 
 What if you want to make a bunch of default users in a row?
 ```
@@ -287,13 +286,10 @@ assert default_1.username == 'default_0'
 ```
 
 Note that the factory sequence started at 0. Would have been nice if it had started at 1.
-Easy enough to fix with a +1
+Easy enough to fix with a +1.
 
-
-#### One Sequence Counter
-There is only one sequence. It is shared between attributes.
-
-Lets use a sequence to start the pk at 0, along with the username, so that pk and username use the same integer.
+Let us demonstrate that there is only one sequence. It is shared between attributes.
+Let us use a sequence to start the pk at 0, along with the username, so that pk and username use the same integer.
 ```
 from factoryboy_example.example_factories import ExampleUserFactory_one_sequence
 default_0 = ExampleUserFactory_one_sequence()
@@ -304,7 +300,7 @@ assert default_0.id == 0
 assert default_0.username == 'default_0'
 ```
 
-We see that (0, 1,2,3,4 ...) is shared between attributes. Moreover, the docs promise that
+We saw above that (0, 1,2,3,4 ...) is shared between attributes. Moreover, the docs promise that
 the sequence belongs to the mother class. If any child class requests for an integer from the sequence 
 to incorporate into a field, that sequence increments to the next integer, and the mother class will get a
 different int the next time it makes a request to the sequence.
