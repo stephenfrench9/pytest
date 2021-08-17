@@ -179,15 +179,20 @@ python manage.py shell
 
 #### Observe
 
-
 # factoryboy
 This is the code-along for the
 [basic usage section](https://factoryboy.readthedocs.io/en/stable/introduction.html#basic-usage)
 of the factoryboy plugin.
 
-The rest of this factoryboy section is done from the Django shell.
+Venv, for reference
 ```
 source testenv/bin/activate
+```
+
+How to Clean the Database
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
 python mysite/manage.py shell
 ```
 
@@ -217,13 +222,24 @@ default.password == 'default'
 default.is_superuser == True
 default.is_staff == True
 default.email == 'default'
+```
+
+Note that ids exist, and stuff was saved to the database.
+pks start at 1
+```
+stephen.id == 1
+default.id == 2
 exit()
+python mysite/manage.py shell
+from django.contrib.auth.models import User
+len(User.objects.all()) == 2
 ```
 
 #### Sequences
 [Sequences](https://factoryboy.readthedocs.io/en/stable/introduction.html#sequences)
 In the previous example, note that the id field is being automatically incremented. 
-This is something that User does automatically, shown below
+This is something that User does automatically, shown below. (The factory was 
+automatically saving to the database)
 
 ```
 rm mysite/db.sqlite3
@@ -243,11 +259,9 @@ j.id == 2
 exit()
 ```
 
-Maybe all Django models do this automatically; it is a default of the model to look at the most recent primary key
-when saving a new object. It seems like the pk is assigned at save.
+Django assigns a pk at save.
 
-But, What if you want to make a bunch of default users in a row?
-
+What if you want to make a bunch of default users in a row?
 ```
 rm mysite/db.sqlite3
 python mysite/manage.py migrate
@@ -260,23 +274,52 @@ default2 = ExampleUserFactory()
 exit()
 ```
 
-It errors. Try a different factory, that increments the username each time it is called:
+It errors, because they all have the same username. 
+You can write a factory that generates a new username each time it is called.
 ```
-rm mysite/db.sqlite3
-python mysite/manage.py migrate
-python mysite/manage.py shell
+from factoryboy_example.example_factories import ExampleUserFactory_sequence
+default_1 = ExampleUserFactory_sequence()
+default_2 = ExampleUserFactory_sequence()
+default_3 = ExampleUserFactory_sequence()
+
+assert default_1.id == 1
+assert default_1.username == 'default_0'
+```
+
+Note that the factory sequence started at 0. Would have been nice if it had started at 1.
+Easy enough to fix with a +1
+
+
+#### One Sequence Counter
+There is only one sequence. It is shared between attributes.
+
+Lets use a sequence to start the pk at 0, along with the username, so that pk and username use the same integer.
+```
+from factoryboy_example.example_factories import ExampleUserFactory_one_sequence
+default_0 = ExampleUserFactory_one_sequence()
+default_1 = ExampleUserFactory_one_sequence()
+default_2 = ExampleUserFactory_one_sequence()
+
+assert default_0.id == 0
+assert default_0.username == 'default_0'
+```
+
+We see that (0, 1,2,3,4 ...) is shared between attributes. Moreover, the docs promise that
+the sequence belongs to the mother class. If any child class requests for an integer from the sequence 
+to incorporate into a field, that sequence increments to the next integer, and the mother class will get a
+different int the next time it makes a request to the sequence.
+[Inheritance With Regards to the Sequence](https://factoryboy.readthedocs.io/en/stable/reference.html#inheritance)
+
+```
+from factoryboy_example.example_factories import ExampleUserFactory_one_sequence
+default_0 = ExampleUserFactory_one_sequence()
+assert default_0.id == 0 # The sequence starts at 0
+assert default_0.username == 'default_0' # The sequence starts at 0
 
 from factoryboy_example.example_factories import ExampleUserFactory_sequence
-default = ExampleUserFactory_sequence()
-default1 = ExampleUserFactory_sequence()
-default2 = ExampleUserFactory_sequence()
-exit()
+default_1 = ExampleUserFactory_sequence()
+assert default_1.username == 'default_1' # The sequence has gotten to 1
 ```
-
-Note that the sequence itself (1,2,3,4 ...) is shared between attributes. Morover, the docs promise that
-the sequence belongs to the mother class. If any child class requests for an interger from the sequence 
-to incorporate into a field, that sequence increments to the next integer.
-[Inheritance With Regards to the Sequence](https://factoryboy.readthedocs.io/en/stable/reference.html#inheritance)
 
 #### Lazy Functions
 Lazy Functions can be used to fill model fields.

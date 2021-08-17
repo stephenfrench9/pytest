@@ -17,10 +17,16 @@ class ExampleUserFactory_sequence(ExampleUserFactory):
 
     @factory.sequence
     def username(n):
-        new = f'{"default"}{str(n)}'
+        new = f'{"default_"}{str(n)}'
         print("orca")
         print(new)
         return new
+
+class ExampleUserFactory_one_sequence(ExampleUserFactory_sequence):
+
+    @factory.sequence
+    def id(n):
+        return n
 
 def password():
     return 'default--from-lazy-function'
