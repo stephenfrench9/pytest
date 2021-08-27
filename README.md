@@ -191,7 +191,7 @@ Venv, for reference
 source testenv/bin/activate
 ```
 
-Clean the Database
+Start django shell against clean database
 ```
 rm mysite/db.sqlite3
 python mysite/manage.py migrate
@@ -202,21 +202,16 @@ Background:
 Django manages the pk and assigns at save.
 pks start at 1
 ```
-rm mysite/db.sqlite3
-python mysite/manage.py migrate
-python mysite/manage.py shell
-
 from django.contrib.auth.models import User 
-j = User(username='ddd')
-assert j.id == None
-j.save()
-assert j.id == 1
+ben = User(username='ben')
+assert ben.id == None
+ben.save()
+assert ben.id == 1
 
-j = User(username='fff')
-assert j.id == None
-j.save()
-j.id == 2
-exit()
+tom = User(username='max')
+assert tom.id == None
+tom.save()
+tom.id == 2
 ```
 
 Use a Factory to instantiate a User.
@@ -249,12 +244,14 @@ stephen.email == 'stephen@stephen.com'
 Confirm that ids exist, and rows were saved to the database.
 pks start at 1.
 ```
-stephen.id == 1
-default.id == 2
+ben.id == 1
+tom.id == 2
+default.id == 3
+stephen.id == 4
 exit()
 python mysite/manage.py shell
 from django.contrib.auth.models import User
-len(User.objects.all()) == 2
+len(User.objects.all()) == 4
 ```
 
 #### Sequences
@@ -270,12 +267,15 @@ from factoryboy_example.example_factories import ExampleUserFactory
 default = ExampleUserFactory()
 default1 = ExampleUserFactory()
 default2 = ExampleUserFactory()
-exit()
 ```
 
 It errors, because they all have the same username. 
 You can write a factory that generates a new username each time it is called.
 ```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
 from factoryboy_example.example_factories import ExampleUserFactory_sequence
 default_1 = ExampleUserFactory_sequence()
 default_2 = ExampleUserFactory_sequence()
@@ -283,14 +283,23 @@ default_3 = ExampleUserFactory_sequence()
 
 assert default_1.id == 1
 assert default_1.username == 'default_0'
+assert default_2.id == 2
+assert default_2.username == 'default_1'
+assert default_3.id == 3
+assert default_3.username == 'default_2'
 ```
 
 Note that the factory sequence started at 0. Would have been nice if it had started at 1.
 Easy enough to fix with a +1.
 
-Let us demonstrate that there is only one sequence. It is shared between attributes.
+Let us demonstrate that there is only one sequence. 
+It is shared between attributes.
 Let us use a sequence to start the pk at 0, along with the username, so that pk and username use the same integer.
 ```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
 from factoryboy_example.example_factories import ExampleUserFactory_one_sequence
 default_0 = ExampleUserFactory_one_sequence()
 default_1 = ExampleUserFactory_one_sequence()
@@ -298,6 +307,10 @@ default_2 = ExampleUserFactory_one_sequence()
 
 assert default_0.id == 0
 assert default_0.username == 'default_0'
+assert default_1.id == 1
+assert default_1.username == 'default_1'
+assert default_2.id == 2
+assert default_2.username == 'default_2'
 ```
 
 We saw above that (0, 1,2,3,4 ...) is shared between attributes. Moreover, the docs promise that
@@ -305,17 +318,68 @@ the sequence belongs to the mother class. If any child class requests for an int
 to incorporate into a field, that sequence increments to the next integer, and the mother class will get a
 different int the next time it makes a request to the sequence.
 [Inheritance With Regards to the Sequence](https://factoryboy.readthedocs.io/en/stable/reference.html#inheritance)
-
 ```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+# reference the sequence from the child class
 from factoryboy_example.example_factories import ExampleUserFactory_one_sequence
 default_0 = ExampleUserFactory_one_sequence()
 assert default_0.id == 0 # The sequence starts at 0
 assert default_0.username == 'default_0' # The sequence starts at 0
 
+# reference the sequence from the mother class
 from factoryboy_example.example_factories import ExampleUserFactory_sequence
 default_1 = ExampleUserFactory_sequence()
+assert default_1.id == 1 # The pk got autoincremented by sql
 assert default_1.username == 'default_1' # The sequence has gotten to 1
+
+# and lets look at the squence from the child class
+default_2 = ExampleUserFactory_one_sequence()
+assert default_2.id == 2 # The sequence is at 2
+assert default_2.username == 'default_2' # The sequence is at 2
 ```
+
+Above things worked out coincidentally. Twice FactoryBoy set the pk to the sequence value, but once
+sqllite set the pk by autoincrement. It just so happened that the sequence was incremented at the same time. 
+
+The above can get messy. The sequence is always the same (0, 1, 2), but, the pks are affected by what is already
+in the database. So in a new shell, after a new import of the the factory class, the sequence starts over at
+a predictable value. The pks start depends upon what is in the database. Also, if you can increment the database
+pk without incrementing the factory sequence, you can get in trouble, in that the sequence will try to use a pk that 
+already exists. Also, if you are hardcoding pks into this readme, those hardcodes assume that the database started at
+0. The problem comes when the sequence is assigning pks, 
+and the pk gets incremented without the sequence knowing about it. If the sequence is always in charge of the PK, that
+is ok. But the minute another object gets created, the db autoincrements, but the sequence never changes, so 
+the next up in the sequence has already been assigned.
+
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+# reference the sequence from the child class
+from factoryboy_example.example_factories import ExampleUserFactory_one_sequence
+default_0 = ExampleUserFactory_one_sequence()
+assert default_0.id == 0 # The sequence starts at 0
+assert default_0.username == 'default_0' # The sequence starts at 0
+
+# increment the pk, but not the sequence
+from django.contrib.auth.models import User
+tom = User(username='tom')
+tom.save()
+
+# and lets look at the squence from the child class
+default_1 = ExampleUserFactory_one_sequence()
+assert default_1.id == 1 # The sequence is at 1
+assert default_1.username == 'default_1' # The sequence is at 1
+```
+
+
+does importing factory class reset the sequence? No.
+Does restarting the shell reset the sequence? Yes.
+
 
 #### Lazy Functions
 Lazy Functions can be used to fill model fields.
@@ -465,7 +529,8 @@ generated in the setup call used to create the module-scoped custom fixtures.1
 # Module Caching
 
 This example is companion code to the
-[fixtures-can-be-requested-more-than-once-per-test-return-values-are-cached](https://docs.pytest.org/en/6.2.x/fixture.html#fixtures-can-be-requested-more-than-once-per-test-return-values-are-cached)
+[fixtures-can-be-requested-more-than-once-per-test-return-values-are-cached]
+(https://docs.pytest.org/en/6.2.x/fixture.html#fixtures-can-be-requested-more-than-once-per-test-return-values-are-cached)
 section of the pytest documentation
 
 

@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 import factory
 
 
+# Basic Usage
+
 class ExampleUserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
@@ -13,6 +15,8 @@ class ExampleUserFactory(factory.django.DjangoModelFactory):
     email = 'default'
 
 
+# Sequences
+
 class ExampleUserFactory_sequence(ExampleUserFactory):
 
     @factory.sequence
@@ -22,14 +26,19 @@ class ExampleUserFactory_sequence(ExampleUserFactory):
         print(new)
         return new
 
+
 class ExampleUserFactory_one_sequence(ExampleUserFactory_sequence):
 
     @factory.sequence
     def id(n):
         return n
 
+
+# lazy functions
+
 def password():
     return 'default--from-lazy-function'
+
 
 class ExampleUserFactory_lazyfunction(ExampleUserFactory):
     password = factory.LazyFunction(password)
