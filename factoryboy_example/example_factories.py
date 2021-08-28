@@ -1,5 +1,8 @@
 from django.contrib.auth.models import User
+from factory import post_generation
 import factory
+import os
+
 
 
 # Basic Usage
@@ -34,8 +37,37 @@ class ExampleUserFactory_one_sequence(ExampleUserFactory_sequence):
         return n
 
 
-# lazy functions
+# Post Generation Hooks
+class UserFactory_PostGeneration(factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
 
+    email = 'john'
+
+    @post_generation
+    def any_word_will_do(obj, create, extracted, **kwargs):
+        print("The Post Generation hook is running.")
+        print("The objects and values available to this callback (hook) are:")
+        print("type(obj): ", type(obj))
+        print("create: ", create)
+        print("extracted: ", extracted)
+        print("kwargs: ", kwargs)
+        print("The Post Generation hook is completed")
+        return "Irrelevant return statement"
+
+
+class Unique(factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
+
+    @post_generation
+    def set_username(obj, create, extracted, **kwargs):
+        print("extrac: ", extracted)
+        print("id: ", obj.id)
+        obj.username = 'default_' + str(obj.id)
+
+
+# lazy functions
 def password():
     return 'default--from-lazy-function'
 

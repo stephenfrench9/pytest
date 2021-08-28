@@ -376,10 +376,61 @@ assert default_1.id == 1 # The sequence is at 1
 assert default_1.username == 'default_1' # The sequence is at 1
 ```
 
-
 does importing factory class reset the sequence? No.
 Does restarting the shell reset the sequence? Yes.
 
+#### Post Generation
+Extracting arguments from Factory Invocation (as in, I will invoke the factory, it will produce an object.)
+
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from factoryboy_example.example_factories import UserFactory_PostGeneration
+steve = UserFactory_PostGeneration.create(any_word_will_do__der="schüler", any_word_will_do__die="schülerin", any_word_will_do__article_die="schule")
+```
+
+I will write a factory s.t.
+1) the pk and username are guaranteed to match
+2) The sequence values are never used as primary keys
+3) There is never a conflict where the factory tries to create an object that has a pk that already exists
+4) Previously, if pks were set by the sequence, then if an object was created without the sequence knowing,
+The sequence would not have the next valid pk.
+   
+In summary, lets not meddle with the primary key, let the dbengine manage the pk. 
+
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from factoryboy_example.example_factories import Unique
+from django.contrib.auth.models import User
+Unique(set_username="fred")
+Unique()
+tom = User(username='tom')
+Unique(set_username="freed")
+Unique()
+Unique(set_username="fr")
+```
+
+#### build vs create
+
+You can see that there is no id available with the build method.
+a.id evaluates to None.
+
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from factoryboy_example.example_factories import Unique
+
+a=Unique.build()
+b=Unique.create()
+c=Unique()   
+```
 
 #### Lazy Functions
 Lazy Functions can be used to fill model fields.
