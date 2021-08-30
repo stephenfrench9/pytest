@@ -380,7 +380,9 @@ does importing factory class reset the sequence? No.
 Does restarting the shell reset the sequence? Yes.
 
 #### Post Generation
-Extracting arguments from Factory Invocation (as in, I will invoke the factory, it will produce an object.)
+Extracting arguments written as the Factory was Invoked (as in, I will invoke the factory, it will produce an object.)
+
+https://factoryboy.readthedocs.io/en/stable/reference.html#inheritance
 
 ```
 rm mysite/db.sqlite3
