@@ -429,7 +429,11 @@ from factoryboy_example.example_factories import Unique
 
 a=Unique.build()
 b=Unique.create()
-c=Unique()   
+c=Unique()
+
+assert a.id == None
+assert b.id == 1
+assert c.id == 2    
 ```
 
 #### Lazy Functions
