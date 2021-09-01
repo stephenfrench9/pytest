@@ -483,7 +483,8 @@ assert user_lazyattribute.password == 'default--from-lazy-function'
 assert user_lazyattribute.email == 'default-1@gmail.com'
 ```
 This fails, because the attribute id is created after the object has been instantiated in the db. It must be that 
-the lazyattribute is computed before the db instantiation.
+the lazyattribute is computed before the db instantiation. The error message actually gives a list of attributes
+that can be evaluated. 
 
 #### Non KWarg args:
 [non KWarg args](https://factoryboy.readthedocs.io/en/stable/introduction.html#non-kwarg-arguments)
