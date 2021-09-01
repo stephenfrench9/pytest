@@ -29,10 +29,10 @@ python3 -m venv testenv
 source testenv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-```
 
+```
 # pytest django 0
-thi is the code along for the
+this is the code along for the
 [quick start](https://pytest-django.readthedocs.io/en/latest/#quick-start)
 and the
 [configuring django](https://pytest-django.readthedocs.io/en/latest/configuring_django.html)
@@ -464,6 +464,26 @@ user_lazyattribute = ExampleUserFactory_lazyattribute(username='stephen')
 assert user_lazyattribute.password == 'default--from-lazy-function'
 assert user_lazyattribute.email == 'stephen@gmail.com'
 ```
+
+The object will have default values hardcoded into the class, a value from a lazy function,
+and a value from a lazyattribute, where the lazy attribute is computed from the default values. 
+```
+from factoryboy_example.example_factories import ExampleUserFactory_lazyattribute
+user_lazyattribute = ExampleUserFactory_lazyattribute()
+assert user_lazyattribute.password == 'default--from-lazy-function'
+assert user_lazyattribute.email == 'default@gmail.com'
+```
+
+This time, the lazy attribute is computed from the default values AND an id, which is managed by the dbengine,
+so it is not known until after the object has been created in the database.
+```
+from factoryboy_example.example_factories import ExampleUserFactory_lazyattribute2
+user_lazyattribute = ExampleUserFactory_lazyattribute2()
+assert user_lazyattribute.password == 'default--from-lazy-function'
+assert user_lazyattribute.email == 'default-1@gmail.com'
+```
+This fails, because the attribute id is created after the object has been instantiated in the db. It must be that 
+the lazyattribute is computed before the db instantiation.
 
 #### Non KWarg args:
 [non KWarg args](https://factoryboy.readthedocs.io/en/stable/introduction.html#non-kwarg-arguments)

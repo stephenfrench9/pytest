@@ -75,11 +75,17 @@ def password():
 class ExampleUserFactory_lazyfunction(ExampleUserFactory):
     password = factory.LazyFunction(password)
 
-
+# lazy attributes
 class ExampleUserFactory_lazyattribute(ExampleUserFactory_lazyfunction):
     @factory.lazy_attribute
     def email(self):
         return f'{self.username}@gmail.com'
+
+class ExampleUserFactory_lazyattribute2(ExampleUserFactory_lazyfunction):
+    @factory.lazy_attribute
+    def email(self):
+        return f'{self.username}-{self.id}@gmail.com'
+
 
 
 class Mine(object):
