@@ -54,6 +54,12 @@ django-admin startproject mysite
 python mysite/manage.py migrate
 ```
 
+### Start a Django Shell
+```
+source testenv/bin/activate
+python mysite/manage.py shell
+```
+
 ### Run
 ```
 PYTHONPATH=/Users/stephen.french/pytest-examples/mysite pytest django_plugin --ds=mysite.settings
@@ -453,38 +459,55 @@ assert user_lazyfunction.username == 'default'
 ```
 
 #### Lazy Attributes:
-Lazy Attributes can be used to fill model fields, this time with data from the object being created.
-Lazy Attributes are also functions! These functions accept the object being instantiated though, and 
-can read the other fields before deciding what value to assign to the LazyAttribute field. I guess you could
-again say something like: LazyAtribute fields have their value calculated at runtime. LazyAttribute fields are 
-special though in that they can depend on other fields. 
+Lazy Attributes can be used to fill model fields, this time with Factory Defaults 
+(Factory Defaults are those values written into the factory class definition.)
+Lazy Attributes overwrite Factory Defaults if there is disagreement.
 ```
-from factoryboy_example.example_factories import ExampleUserFactory_lazyattribute
-user_lazyattribute = ExampleUserFactory_lazyattribute(username='stephen')
-assert user_lazyattribute.password == 'default--from-lazy-function'
+from factoryboy_example.example_factories import lazyattribute
+user_lazyattribute = lazyattribute()
+assert user_lazyattribute.password == 'lazy_pw'
+assert user_lazyattribute.email == 'lazy_user@gmail.com'
+user_lazyattribute.delete()
+```
+
+If the factory defaults are overwritten at Factory Invocation,
+The Lazy Attribute references the new values rather than Factory Defaults.
+```
+from factoryboy_example.example_factories import lazyattribute
+user_lazyattribute = lazyattribute(username='stephen')
+assert user_lazyattribute.password == 'lazy_pw'
 assert user_lazyattribute.email == 'stephen@gmail.com'
+user_lazyattribute.delete()
 ```
 
-The object will have default values hardcoded into the class, a value from a lazy function,
-and a value from a lazyattribute, where the lazy attribute is computed from the default values. 
+LazyAttributes can be overwritten at Factory Invocation.
 ```
-from factoryboy_example.example_factories import ExampleUserFactory_lazyattribute
-user_lazyattribute = ExampleUserFactory_lazyattribute()
-assert user_lazyattribute.password == 'default--from-lazy-function'
-assert user_lazyattribute.email == 'default@gmail.com'
+from factoryboy_example.example_factories import lazyattribute
+user_lazyattribute = lazyattribute(email='stephen')
+assert user_lazyattribute.password == 'lazy_pw'
+assert user_lazyattribute.email == 'stephen'
+user_lazyattribute.delete()
 ```
 
-This time, the lazy attribute is computed from the default values AND an id, which is managed by the dbengine,
-so it is not known until after the object has been created in the database.
+LazyAttributes can NOT reference themselves. 
+You get a `CyclicDefinitionError`
 ```
-from factoryboy_example.example_factories import ExampleUserFactory_lazyattribute2
-user_lazyattribute = ExampleUserFactory_lazyattribute2()
-assert user_lazyattribute.password == 'default--from-lazy-function'
-assert user_lazyattribute.email == 'default-1@gmail.com'
+from factoryboy_example.example_factories import lazyattribute_reflexive
+user_lazyattribute = lazyattribute_reflexive()
+assert user_lazyattribute.password == 'lazy_pw'
+assert user_lazyattribute.email == 'lazy_email@gmail.com'
 ```
-This fails, because the attribute id is created after the object has been instantiated in the db. It must be that 
-the lazyattribute is computed before the db instantiation. The error message actually gives a list of attributes
-that can be evaluated. 
+
+The id is assigned to the object after object instantiation, at database save.
+The id is not available to the lazy attribute.
+```
+from factoryboy_example.example_factories import lazyattribute_id
+user_lazyattribute = lazyattribute_id()
+```
+This fails with `AttributeError` because the id doesn't exist yet.
+The attribute id is created after the object has been instantiated in the db.
+It must be that the lazyattribute is computed before the db instantiation. 
+The error message actually gives a list of attributes that can be evaluated. 
 
 #### Non KWarg args:
 [non KWarg args](https://factoryboy.readthedocs.io/en/stable/introduction.html#non-kwarg-arguments)
