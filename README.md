@@ -635,6 +635,14 @@ print(f"{'len(User.objects.all()): '}{len(User.objects.all())}")
 
 from django.contrib.auth.models import User
 
+# Common Recipes
+(Common Recipes)[https://factoryboy.readthedocs.io/en/stable/recipes.html#common-recipes]
+
+## Common Recipes: dependent-objects-foreignkey 
+(dependent-objects-foreignkey)[https://factoryboy.readthedocs.io/en/stable/recipes.html#dependent-objects-foreignkey]
+
+
+
 # Fixture with Module Scope
 
 ### Run commands 
@@ -642,6 +650,7 @@ from django.contrib.auth.models import User
 cd fixture_with_module_scope
 pytest
 ```
+
 
 ### Observe output
 
@@ -1053,3 +1062,16 @@ pytest exceptions.py
 npm install markdown-toc
 npx markdown-toc README.md
 ```
+
+From your application shell, you import relative to the root of your django project (where manage.py is found),
+even if your shell is started from a different directory.
+
+ie 
+
+```
+python mysite/manage.py shell
+# from mysite.polls.models import Suser = WRONG
+# from polls.models import Suser = RIGHT
+```
+
+said another way, when you import django stuff, you always do it relative to manage.py.

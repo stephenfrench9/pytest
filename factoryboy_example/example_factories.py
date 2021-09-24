@@ -104,6 +104,26 @@ class lazyattribute_id(lazyattribute):
         return f'{self.username}-{self.id}@gmail.com'
 
 
+from polls.models import Group
+class GroupFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Group
+
+    name = factory.Sequence(lambda n: "Agent %03d" % n)
+
+
+## Comon recipes
+# factories.py
+# from factoryboy_example.example_factories import SuserFactory
+from polls.models import Suser
+class SuserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Suser
+
+    name = factory.Sequence(lambda n: "Agent %03d" % n)
+    group = factory.SubFactory(GroupFactory)
+
+## Common recipes
 
 class Mine(object):
     """
