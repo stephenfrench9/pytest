@@ -641,16 +641,25 @@ from django.contrib.auth.models import User
 ## Common Recipes: dependent-objects-foreignkey 
 (dependent-objects-foreignkey)[https://factoryboy.readthedocs.io/en/stable/recipes.html#dependent-objects-foreignkey]
 
+A Suser object points to a Group object. SuserFactory is written such that whenever a Suser is instantianted, a Group is also instantiated, for the Suser to point to. This is done in a similiar manner to how default values are defined for simpler Target Class fields. ie `group = factory.SubFactory(GroupFactory)` is similiar to `name = factory.Sequence(lambda n: "Agent %03d" % n)` where both name and field are fields in the Target Class.
+```
+from factoryboy_example.example_factories import SuserFactory
+from factoryboy_example.example_factories import GroupFactory
 
+a = GroupFactory()
+print(a.id)
+a = SuserFactory()
+print(a.group.id)
+a = GroupFactory()
+print(a.id)
+```
 
 # Fixture with Module Scope
-
 ### Run commands 
 ```
 cd fixture_with_module_scope
 pytest
 ```
-
 
 ### Observe output
 
@@ -1074,4 +1083,8 @@ python mysite/manage.py shell
 # from polls.models import Suser = RIGHT
 ```
 
-said another way, when you import django stuff, you always do it relative to manage.py.
+said another way, when you import django stuff, you should always do it relative to manage.py.
+
+`python manage.py shell` results in '1 import root',
+`python mysite/manage.py` shell results in '2 import roots'.
+what do I mean by import root? I mean an address relative to which you can write imports.

@@ -103,8 +103,9 @@ class lazyattribute_id(lazyattribute):
     def email(self):
         return f'{self.username}-{self.id}@gmail.com'
 
-
+## Comon recipes
 from polls.models import Group
+from mysite.polls.models import Group
 class GroupFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Group
@@ -112,10 +113,9 @@ class GroupFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "Agent %03d" % n)
 
 
-## Comon recipes
-# factories.py
-# from factoryboy_example.example_factories import SuserFactory
+
 from polls.models import Suser
+from mysite.polls.models import Suser
 class SuserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Suser
