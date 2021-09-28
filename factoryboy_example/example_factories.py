@@ -4,24 +4,24 @@ import factory
 import os
 
 
-
 # Basic Usage
+
 
 class ExampleUserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = 'default'
-    password = 'default'
+    username = "default"
+    password = "default"
     is_superuser = True
     is_staff = True
-    email = 'default'
+    email = "default"
 
 
 # Sequences
 
-class ExampleUserFactory_sequence(ExampleUserFactory):
 
+class ExampleUserFactory_sequence(ExampleUserFactory):
     @factory.sequence
     def username(n):
         new = f'{"default_"}{str(n)}'
@@ -31,7 +31,6 @@ class ExampleUserFactory_sequence(ExampleUserFactory):
 
 
 class ExampleUserFactory_one_sequence(ExampleUserFactory_sequence):
-
     @factory.sequence
     def id(n):
         return n
@@ -42,7 +41,7 @@ class UserFactory_PostGeneration(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    email = 'john'
+    email = "john"
 
     @post_generation
     def any_word_will_do(obj, create, extracted, **kwargs):
@@ -64,12 +63,12 @@ class Unique(factory.django.DjangoModelFactory):
     def set_username(obj, create, extracted, **kwargs):
         print("extrac: ", extracted)
         print("id: ", obj.id)
-        obj.username = 'default_' + str(obj.id)
+        obj.username = "default_" + str(obj.id)
 
 
 # lazy functions
 def password():
-    return 'default--from-lazy-function'
+    return "default--from-lazy-function"
 
 
 class ExampleUserFactory_lazyfunction(ExampleUserFactory):
@@ -81,31 +80,35 @@ class lazyattribute(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = 'lazy_user'
-    password = 'lazy_pw'
+    username = "lazy_user"
+    password = "lazy_pw"
     is_superuser = True
     is_staff = True
-    email = 'lazy_email'
+    email = "lazy_email"
 
     @factory.lazy_attribute
     def email(self):
-        return f'{self.username}@gmail.com'
+        return f"{self.username}@gmail.com"
 
 
 class lazyattribute_reflexive(lazyattribute):
     @factory.lazy_attribute
     def email(self):
-        return f'{self.email}@gmail.com'
+        return f"{self.email}@gmail.com"
 
 
 class lazyattribute_id(lazyattribute):
     @factory.lazy_attribute
     def email(self):
-        return f'{self.username}-{self.id}@gmail.com'
+        return f"{self.username}-{self.id}@gmail.com"
+
 
 ## Comon recipes
 from polls.models import Group
-from mysite.polls.models import Group
+
+# from mysite.polls.models import Group
+
+
 class GroupFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Group
@@ -113,9 +116,11 @@ class GroupFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "Agent %03d" % n)
 
 
-
 from polls.models import Suser
-from mysite.polls.models import Suser
+
+# from mysite.polls.models import Suser
+
+
 class SuserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Suser
@@ -123,7 +128,9 @@ class SuserFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "Agent %03d" % n)
     group = factory.SubFactory(GroupFactory)
 
+
 ## Common recipes
+
 
 class Mine(object):
     """
@@ -139,7 +146,7 @@ class Mine(object):
 class MineFactory(factory.Factory):
     class Meta:
         model = Mine
-        inline_args = ('first_position', 'second_position', 'third_position')
+        inline_args = ("first_position", "second_position", "third_position")
 
     first_position = 1
     second_position = 2
@@ -166,4 +173,6 @@ class RentalFactory(factory.Factory):
 
     class Params:
         duration = 5
-        old = factory.Trait(begin=datetime.date(1900, 1, 1), end=datetime.date(1900, 1, 3))
+        old = factory.Trait(
+            begin=datetime.date(1900, 1, 1), end=datetime.date(1900, 1, 3)
+        )
