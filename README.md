@@ -73,6 +73,7 @@
   * [Run](#run-14)
   * [Observe](#observe-14)
 - [Match Error Messages](#match-error-messages)
+
 # Initialization
 
 ```
@@ -82,6 +83,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 
 ```
+
 # pytest django 0
 this is the code along for the
 [quick start](https://pytest-django.readthedocs.io/en/latest/#quick-start)
@@ -621,24 +623,10 @@ print(rental0.begin)
 print(rental0.end)
 ```
 
-#### build vs. create
-Does the factory save the item to the database?
-```
-python mysite/manage.py shell
-
-from django.contrib.auth.models import User
-print(f"{'len(User.objects.all()): '}{len(User.objects.all())}")
-from factoryboy_example.example_factories import ExampleUserFactory
-stephen = ExampleUserFactory(username='stephen', email='stephen@stephen.com')
-print(f"{'len(User.objects.all()): '}{len(User.objects.all())}")
-```
-
-from django.contrib.auth.models import User
-
 # Common Recipes
 (Common Recipes)[https://factoryboy.readthedocs.io/en/stable/recipes.html#common-recipes]
 
-## Common Recipes: dependent-objects-foreignkey 
+### Common Recipes: dependent-objects-foreignkey 
 (dependent-objects-foreignkey)[https://factoryboy.readthedocs.io/en/stable/recipes.html#dependent-objects-foreignkey]
 
 A Suser object points to a Group object. SuserFactory is written such that whenever a Suser is instantianted, a Group is also instantiated, for the Suser to point to. This is done in a similiar manner to how default values are defined for simpler Target Class fields. ie `group = factory.SubFactory(GroupFactory)` is similiar to `name = factory.Sequence(lambda n: "Agent %03d" % n)` where both name and field are fields in the Target Class.
@@ -654,7 +642,127 @@ a = GroupFactory()
 print(a.id)
 ```
 
-# Fixture with Module Scope
+### Common Recipes: choosing-from-a-populated-table
+[choosing-from-a-populated-table](https://factoryboy.readthedocs.io/en/stable/recipes.html#choosing-from-a-populated-table)
+
+If a Factory produces a class which has a Foreign Key field, and you want the Factory Products to reference pre-existing Django Objects, then use the `factory.Iterator` method as you assign the default in your factory declaration.
+
+Each Suser will belong to Group a, b, or c.
+```
+rm mysite/dbsqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from factoryboy_example.example_factories import DraftedSuserFactory
+from factoryboy_example.example_factories import GroupFactory
+
+a = GroupFactory(name='a')
+b = GroupFactory(name='b')
+c = GroupFactory(name='c')
+
+s0 = DraftedSuserFactory()
+s1 = DraftedSuserFactory()
+s2 = DraftedSuserFactory()
+s3 = DraftedSuserFactory()
+s4 = DraftedSuserFactory()
+
+assert s0.group.name == 'a'
+assert s1.group.name == 'b'
+assert s2.group.name == 'c'
+assert s0.group.name == 'a'
+assert s1.group.name == 'b'  
+```
+
+### Common Recipes: reverse-foreignkey
+[reverse-foreignkey](https://factoryboy.readthedocs.io/en/stable/recipes.html#reverse-dependencies-reverse-foreignkey)
+
+Paradigm: If one model has a foreign key to another, let us call these models the Pointer and the Identified.
+
+Paradigm: If a FactoryClass produces instances of another class, let us call these the Factory Class and the Product Class, or the Product object if it is instantiated. Restated, The Factory Class produces Products 
+
+If a Product has a reverse foriegn key relationship to another object (the Product is the Identified and the other model is the Pointer), then you can use the Factory.ReverseForeignKey field to indicate that the Pointer should also be instantiated on Factory Invocation and point to the Product.
+
+Note that User points to Group - User is the Pointer, and Group is the Identified. Restated, the Foreign Key resides with User. If we wanted every Group to have at least one User,
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from factoryboy_example.example_factories import AutomaticallyPopulatedGroup_Factory
+from polls.models import Suser
+
+g1 = AutomaticallyPopulatedGroup_Factory(name='a')
+g2 = AutomaticallyPopulatedGroup_Factory(name='b')
+
+Susers = Suser.objects.all()
+Groups = Groups.objects.all() 
+users[0].group.name = 'a'
+users[1].group.name = 'b'
+```
+
+### Common Recipes: many-to-many basics
+1. Do not identify foreign keys in the constructor.
+1. Under the hood, the manytomany-field-in-the-python-model-from-which-the-object-is-generated DOES NOT appear as a field in the corresponding database. 
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from polls.models import PromiscuousUser # relative to manage.py
+from factoryboy_example.example_factories import GroupFactory # relative to root of repo aka shell start dir
+g1=GroupFactory.create(name='g1')
+g2=GroupFactory.create(name='g2')
+
+p1=PromiscuousUser(name='p1')
+p1.save()
+p1.group.add(g1)
+p1.group.add(g2)
+
+p1.group.all()
+```
+
+### Common Recipes: simple-many-to-many-relationship
+Mass Produce a model which has a many2many field.
+1. what model should be instantiated to fill the many2many field?
+[simple-many-to-many-relationship](https://factoryboy.readthedocs.io/en/stable/recipes.html#simple-many-to-many-relationship)
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+# The factory will be written such that two new Groups (Identified) get created and added to the User (Pointer).
+from factoryboy_example.example_factories import PromiscuousUserFactory
+from polls.models import Group
+a = PromiscuousUserFactory()
+set(a.group.all()) == set(Groups.objects.all())   
+```
+
+#### build vs. create
+First you build, then you create. You build a house, then you create a home. build, then create. building is easy, you just assemble materials. Creating is difficult, abstract, requires inspiration.
+
+Does the factory save the item to the database (restated, does it build the Product, or just create it?) 
+```
+rm mysite/db.sqlite3
+python mysite/manage.py migrate
+python mysite/manage.py shell
+
+from django.contrib.auth.models import User
+from factoryboy_example.example_factories import ExampleUserFactory
+
+tommy = ExampleUserFactory.build(username='maximus', email='max@max.com')
+print(f"len(User.objects.all()): {len(User.objects.all())}")
+
+stephen = ExampleUserFactory.create(username='stephen', email='stephen@stephen.com')
+print(f"{'len(User.objects.all()): '}{len(User.objects.all())}")
+
+diestimme = ExampleUserFactory(username='die', email='stimme@stephen.com')
+print(f"{'len(User.objects.all()): '}{len(User.objects.all())}")
+```
+Yes, the default behaviour for the factory is to save to the database. It goes so far, it creates.
+
+
+from django.contrib.auth.models import User
+
 ### Run commands 
 ```
 cd fixture_with_module_scope
